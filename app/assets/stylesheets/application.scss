@@ -1,0 +1,34 @@
+@import "bootstrap";
+
+.container {
+  margin: 20px auto;
+}
+
+.header,
+.footer {
+  background-color: #1da1f2;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 3rem;
+  width: 100%;
+  position: sticky;
+}
+
+.footer {
+  bottom: 0;
+}
+
+.header {
+  top: 0;
+}
+
+.actions {
+  display: inline-flex;
+  margin-right: 10px;
+}
+
+.actions .btn {
+  margin-right: 5px;
+}

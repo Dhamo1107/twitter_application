@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TwitterApplication</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+  <div class="header">
+    <p>Welcome to Twitter!</p>
+  </div>
+
+  <% if notice.present? %>
+    <p class="alert alert-success"><%= notice %></p>
+  <% end %>
+  <% if alert.present? %>
+    <p class="alert alert-danger"><%= alert %></p>
+  <% end %>
+    <div class = "container">
+      <% if user_signed_in? %>
+        <p>Logged in as <strong><%= current_user.email %></strong></p>
+        <div class = "actions">
+        <%= link_to 'Edit profile', edit_user_registration_path, class: "btn btn-primary btn-sm" %>
+        <%= button_to('Logout', destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm") %>
+        </div>
+      <% else %>
+        <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-sm" %>
+        <%= link_to "Login", new_user_session_path, class: "btn btn-success btn-sm" %>
+      <% end %>
+      <br><hr><br>
+    <%= yield %>
+    </div>
+
+  <% unless params[:controller] == "devise/sessions" %>
+    <div class="footer">
+      <p>Thank You ♡</p>
+    </div>
+  <% end %>
+
+  </body>
+</html>
