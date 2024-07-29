@@ -1,103 +1,86 @@
-<table class="table table-striped">
-  <thead class="thead-dark">
-  <tr>
-    <th><h4>Your Followers (<%= current_user.followers_count %>)</h4></th>
-    <th><h4>You Following (<%= current_user.followees_count %>)</h4></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>
+<div class="tweet-form-container">
+<div class="followers-following">
+  <div class="followers">
+    <h4>Your Followers (<%= current_user.followers_count %>)</h4>
+    <ul>
       <% current_user.followers.each do |follower| %>
-        <%= follower.email %><br>
+        <li><%= follower.email %></li>
       <% end %>
-    </td>
-    <td>
+    </ul>
+  </div>
+  <div class="following">
+    <h4>You Following (<%= current_user.followees_count %>)</h4>
+    <ul>
       <% current_user.followees.each do |followee| %>
-        <%= followee.email %><br>
+        <li><%= followee.email %></li>
       <% end %>
-    </td>
-  </tr>
-  </tbody>
-</table>
+    </ul>
+  </div>
+</div>
+</div>
 
-<br><hr><br>
-<h3><strong>Available Users</strong></h3>
-  <table class="table table-striped">
-    <thead class="thead-dark">
-    <tr>
-      <th>User</th>
-      <th>Followers</th>
-      <th>Following</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% @user.each do |user| %>  <% next if user == current_user %>
-      <tr>
-        <td><%= user.email %></td>
-        <td>
-          <%= user.followers_count %> (
-          <% follower_emails = user.followers.pluck(:email) %>
-          <%= follower_emails.join(', ') %>
-          )
-        </td>
-        <td>
-          <%= user.followees_count %> (
-          <% followees_emails = user.followees.pluck(:email) %>
-          <%= followees_emails.join(', ') %>
-          )
-        </td>
-        <td>
+<div class="tweet-form-container">
+<h3 class="section-header"><strong>Available Users</strong></h3>
+<div class="user-list">
+  <% @user.each do |user| %>
+    <% next if user == current_user %>
+    <div class="user-card">
+      <div class="user-info">
+        <p class="user-email"><strong><%= user.email %></strong></p>
           <% if current_user.followees.include?(user) %>
-            <%= button_to "Unfollow", unfollow_user_path(user), method: :post, class: "btn btn-danger btn-sm", style: "display: inline-block;" %>
+            <%= button_to "Unfollow", unfollow_user_path(user), method: :post, class: "btn btn-danger btn-sm" %>
           <% else %>
-            <%= button_to "Follow", follow_user_path(user), method: :post, class: "btn btn-success btn-sm", style: "display: inline-block;" %>
+            <%= button_to "Follow", follow_user_path(user), method: :post, class: "btn btn-success btn-sm" %>
           <% end %>
-        </td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+        <div class="follow-info">
+          <div class="followers">
+            <p>Followers <%= user.followers_count %></p>
+            <ul class="email-list">
+              <% follower_emails = user.followers.pluck(:email) %>
+              <% follower_emails.each do |email| %>
+                <li><%= email %></li>
+              <% end %>
+            </ul>
+          </div>
+          <div class="following">
+            <p>Following <%= user.followees_count %></p>
+            <ul class="email-list">
+              <% followees_emails = user.followees.pluck(:email) %>
+              <% followees_emails.each do |email| %>
+                <li><%= email %></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-<br><hr><br>
+    </div>
+  <% end %>
+</div>
+</div>
 
-  <h3><strong>What's on your mind ?</strong></h3>
+<div class="tweet-form-container">
+  <h3 class="section-header"><strong>What's on your mind?</strong></h3>
   <%= render partial: 'tweet_form', locals: { tweet: @tweet } %>
-  <%= link_to 'PfSense', 'http://192.168.10.1', target: '_blank', class: 'btn btn-primary' %>
+</div>
 
-<br><hr><br>
-
-  <h3><strong>All Tweets</strong></h3>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <th>Tweet</th>
-      <th>Posted By</th>
-      <th>At</th>
-      <% if current_user.present? %>
-        <th>Actions</th>
+<div class="tweet-form-container">
+<h3 class="section-header"><strong>All Tweets</strong></h3>
+<div class="tweets-container">
+  <% @tweets.each do |tweet| %>
+    <div class="tweet-card">
+      <p class="tweet-content"><%= tweet.content %></p>
+      <p class="tweet-info"><strong>Posted By:</strong> <%= tweet.user.email %></p>
+      <p class="tweet-info"><strong>At:</strong> <%= tweet.updated_at.strftime("%d-%m-%Y %H:%M:%S") %></p>
+      <div class="actions">
+      <% if can?(:edit, tweet) %>
+        <%= link_to "", edit_user_tweet_path(tweet.user, tweet), class: "btn btn-primary btn-sm fa fa-pencil" %>
       <% end %>
-    </tr>
-    </thead>
-    <tbody>
-    <% @tweets.each do |tweet| %>
-      <tr>
-        <td><%= tweet.content %></td>
-        <td><%= tweet.user.email %></td>
-        <td><%= tweet.updated_at.strftime("%d-%m-%Y %H:%M:%S") %></td>
-        <% if current_user.present? && tweet.user == current_user %>
-          <td>
-            <div class="actions">
-              <%= link_to "Edit", edit_user_tweet_path(tweet.user, tweet), class: "btn btn-primary btn-sm" %>
-              <%= button_to "Delete", user_tweet_path(tweet.user, tweet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm" %>
-            </div>
-          </td>
-        <% else %>
-          <td>Permission denied</td>
-        <% end %>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
+      <% if can?(:destroy, tweet) %>
+        <%= button_to "", user_tweet_path(tweet.user, tweet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger btn-sm fa fa-trash-o" %>
+      <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
 </div>

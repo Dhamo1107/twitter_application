@@ -1,46 +1,52 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>TwitterApplication</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<html lang="en">
+<head>
+  <title>Tweeter Application</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+  <link href="//stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+  <h3>Welcome to Tweeter!</h3>
+  <p>Your favorite place to connect and share</p>
+</header>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-  </head>
-
-  <body>
-  <div class="header">
-    <p>Welcome to Twitter!</p>
-  </div>
-
+<div class="container">
   <% if notice.present? %>
     <p class="alert alert-success"><%= notice %></p>
   <% end %>
   <% if alert.present? %>
     <p class="alert alert-danger"><%= alert %></p>
   <% end %>
-    <div class = "container">
-      <% if user_signed_in? %>
-        <p>Logged in as <strong><%= current_user.email %></strong></p>
-        <div class = "actions">
-        <%= link_to 'Edit profile', edit_user_registration_path, class: "btn btn-primary btn-sm" %>
-        <%= button_to('Logout', destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm") %>
-        </div>
-      <% else %>
-        <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-sm" %>
-        <%= link_to "Login", new_user_session_path, class: "btn btn-success btn-sm" %>
-      <% end %>
-      <br><hr><br>
-    <%= yield %>
-    </div>
 
-  <% unless params[:controller] == "devise/sessions" %>
-    <div class="footer">
-      <p>Thank You ♡</p>
+  <% if user_signed_in? %>
+    <div class = "tweet-form-container">
+    <div class="user-info">
+      <h4>Logged in as <strong><%= current_user.email %></strong></h4>
+      <div class = "actions">
+        <%= link_to 'Edit profile', edit_user_registration_path, class: "btn btn-primary btn-sm" %>
+        <%= button_to 'Logout', destroy_user_session_path, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger btn-sm" %>
+      </div>
+    </div>
+    </div>
+  <% else %>
+    <div class = "auth-links">
+      <%= link_to "Sign up", new_user_registration_path, class: "btn btn-primary btn-sm" %>
+      <%= link_to "Login", new_user_session_path, class: "btn btn-success btn-sm" %>
     </div>
   <% end %>
+  <%= yield %>
+</div>
 
-  </body>
+<% unless params[:controller] == "devise/sessions" %>
+  <footer class="footer">
+    <p>Connect with us and share your moments. We appreciate your presence!</p>
+  </footer>
+<% end %>
+</body>
 </html>

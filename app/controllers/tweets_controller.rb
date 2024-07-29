@@ -1,4 +1,5 @@
 class TweetsController < ApplicationController
+  load_and_authorize_resource
   before_action :set_user
   before_action :set_tweet, only: %i[show edit update destroy]
 
@@ -7,6 +8,8 @@ class TweetsController < ApplicationController
   end
 
   def edit
+    find_tweet
+    authorize! :edit, @tweet
   end
 
   def create
@@ -20,6 +23,8 @@ class TweetsController < ApplicationController
   end
 
   def update
+    find_tweet
+    authorize! :update, @tweet
     if @tweet.update(tweet_params)
       redirect_to users_path, notice: "Tweet was successfully updated."
     else
@@ -28,6 +33,8 @@ class TweetsController < ApplicationController
   end
 
   def destroy
+    find_tweet
+    authorize! :destroy, @tweet
     @tweet.destroy
     redirect_to users_url, alert: "Tweet was successfully destroyed."
   end
@@ -40,6 +47,10 @@ class TweetsController < ApplicationController
 
   def set_tweet
     @tweet = @user.tweets.find(params[:id])
+  end
+
+  def find_tweet
+    @tweet = Tweet.find(params[:id])
   end
 
   def tweet_params
