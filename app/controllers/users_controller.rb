@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   def index
     @user = User.includes(:followers, :followees, :tweets).all
-    @tweets = Tweet.all
+    @tweets = Tweet.includes(:user).all
     @tweet = Tweet.new
   end
 
